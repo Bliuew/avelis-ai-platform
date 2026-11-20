@@ -1,6 +1,6 @@
 FROM python:3.13-slim AS unpack
 WORKDIR /src
-COPY Avelis_AI_Private_Beta_Platform.zip /tmp/avelis.zip
+COPY Avezqi_Phase_I_Updated_Platform.zip /tmp/avelis.zip
 RUN python -m zipfile -e /tmp/avelis.zip /src && test -f /src/server.py && test -f /src/requirements.txt && test -d /src/public
 
 FROM python:3.13-slim
@@ -13,3 +13,4 @@ COPY --from=unpack --chown=avelis:avelis /src/public/ public/
 USER avelis
 EXPOSE 8000
 CMD ["python", "-c", "import os, sys, time\nimport server\nemail = os.environ.pop('AVELIS_OWNER_EMAIL', '').strip()\ncode = os.environ.pop('AVELIS_OWNER_INVITE', '').strip()\nif email and code:\n    email = server.email(email)\n    if not 24 <= len(code) <= 200:\n        raise SystemExit('Generate a strong AVELIS_OWNER_INVITE in Render.')\n    with server.db() as c:\n        c.execute('BEGIN IMMEDIATE')\n        if not c.execute('SELECT 1 FROM users LIMIT 1').fetchone():\n            c.execute('INSERT OR IGNORE INTO invites VALUES(?,?,?,?,0)', (server.digest(code), None, email, int(time.time()) + 259200))\n            print('Founder invitation initialization checked.', flush=True)\nos.execv(sys.executable, [sys.executable, 'server.py'])\n"]
+
