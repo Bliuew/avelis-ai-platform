@@ -1,7 +1,7 @@
 FROM python:3.13-slim AS unpack
 WORKDIR /src
-COPY Avezqi_Phase_I_Updated_Platform.zip /tmp/avelis.zip
-RUN python -m zipfile -e /tmp/avelis.zip /src && test -f /src/server.py && test -f /src/requirements.txt && test -d /src/public
+COPY Avezqi_Render_Deploy.zip /tmp/deploy.zip
+RUN python -m zipfile -e /tmp/deploy.zip /tmp/deploy && python -m zipfile -e /tmp/deploy/Avezqi_Phase_I_Updated_Platform.zip /src && test -f /src/server.py && test -f /src/requirements.txt && test -d /src/public
 
 FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
